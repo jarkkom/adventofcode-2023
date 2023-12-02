@@ -28,60 +28,6 @@ fn read_input(reader: impl Read) -> Result<Vec<String>, String> {
     Ok(output)
 }
 
-fn get_spelled_calibration_value(line: &str) -> i64 {
-    let digit_map: HashMap<&str, &str> = [
-        ("one", "1"), ("two", "2"), 
-        ("three", "3"), ("four", "4"), ("five", "5"), 
-        ("six", "6"), ("seven", "7"), ("eight", "8"), 
-        ("nine", "9"),
-    ].iter().cloned().collect();
-
-    let mut first_digit = None;
-    let mut last_digit = None;
-    let mut i = 0;
-
-    while i < line.len() {
-        let remaining = &line[i..];
-        let mut found_digit = None;
-
-        for (word, &num) in &digit_map {
-            if remaining.starts_with(word) {
-                found_digit = Some(num.to_string());
-                break;
-            }
-        }
-
-        if found_digit.is_none() {
-            if remaining.chars().next().unwrap().is_digit(10) {
-                found_digit = Some(remaining.chars().next().unwrap().to_string());
-            }
-        }
-
-        if let Some(digit) = found_digit {
-            if first_digit.is_none() {
-                first_digit = Some(digit.clone());
-            }
-            last_digit = Some(digit);
-        }
-
-        i += 1;
-    }
-
-    let value = first_digit.unwrap().parse::<i64>().unwrap() * 10 + last_digit.unwrap().parse::<i64>().unwrap();
-
-    value
-}
-
-fn get_calibration_value(line: &str) -> i64 {
-    let digits: Vec<char> = line.chars().filter(|c| c.is_digit(10)).collect();
-    if digits.is_empty() {
-        return 0;
-    }
-    let first_digit = digits.first().unwrap().to_digit(10).unwrap();
-    let last_digit = digits.last().unwrap().to_digit(10).unwrap();
-    (first_digit * 10 + last_digit) as i64
-}
-
 fn is_game_possible<'a, I>(sets: I) -> bool 
 where
     I: Iterator<Item = &'a str>
